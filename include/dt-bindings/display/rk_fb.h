@@ -14,6 +14,22 @@
 #define DUAL		2
 #define DUAL_LCD	3
 
+ #define DUAL       2
+ #define DUAL_LCD   3
+
+//houxiangpan added begin
+#define DEFAULT_MODE   0
+#define HDMI_720P  0
+#define HDMI_1080P 1
+#define HDMI_2160P 2
+#define NTSC_CVBS  3
+#define PAL_CVBS   4
+
+#define DEFAULT_MODE           0
+#define ONE_VOP_DUAL_MIPI_HOR_SCAN 1
+#define ONE_VOP_DUAL_MIPI_VER_SCAN 2
+//houxiangpan added end
+
 #define DEFAULT_MODE			0
 #define ONE_VOP_DUAL_MIPI_HOR_SCAN	1
 #define ONE_VOP_DUAL_MIPI_VER_SCAN	2

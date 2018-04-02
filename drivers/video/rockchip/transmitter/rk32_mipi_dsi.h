@@ -307,6 +307,7 @@ struct dsi_host {
 struct dsi {
 	u8 dsi_id;
 	u8 lcdc_id;
+	int prop;//houxiangpan added
 	u8 vid;
 	u8 clk_on;
 	struct regmap *grf_base;

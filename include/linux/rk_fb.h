@@ -819,7 +819,14 @@ extern int rk_fb_set_vop_pwm(void);
 extern int rk_fb_get_prmry_screen( struct rk_screen *screen);
 extern int rk_fb_set_prmry_screen(struct rk_screen *screen);
 extern u32 rk_fb_get_prmry_screen_pixclock(void);
-extern int rk_disp_pwr_ctr_parse_dt(struct rk_lcdc_driver *dev_drv);
+//houxiangpan modified begin
+//extern int rk_disp_pwr_ctr_parse_dt(struct rk_lcdc_driver *dev_drv);
+extern int rk_fb_get_screen(struct rk_screen *screen, int prop);
+extern int rk_fb_set_screen(struct rk_screen *screen, int prop);
+extern int rk_disp_pwr_ctr_parse_dt(struct device_node *np,
+                   struct rk_screen *rk_screen);
+//houxiangpan modified end
+
 extern int rk_disp_pwr_enable(struct rk_lcdc_driver *dev_drv);
 extern int rk_disp_pwr_disable(struct rk_lcdc_driver *dev_drv);
 extern bool is_prmry_rk_lcdc_registered(void);

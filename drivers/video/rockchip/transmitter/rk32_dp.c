@@ -129,7 +129,10 @@ static int rk32_edp_init_edp(struct rk32_edp *edp)
 	struct rk_screen *screen = &edp->screen;
 	u32 val = 0;
 
-	rk_fb_get_prmry_screen(screen);
+//houxiangpan modified begin
+//	rk_fb_get_prmry_screen(screen);
+	rk_fb_get_screen(screen, edp->prop);
+//houxiangpan modified end
 
 	if (cpu_is_rk3288()) {
 		if (screen->lcdc_id == 1)  /*select lcdc*/
@@ -1734,17 +1737,32 @@ static int rk32_edp_probe(struct platform_device *pdev)
 	struct resource *res;
 	struct device_node *np = pdev->dev.of_node;
 	int ret;
+//houxiangpan modified begin
+	int prop;
+//houxiangpan modified end
+
 
 	if (!np) {
 		dev_err(&pdev->dev, "Missing device tree node.\n");
 		return -EINVAL;
 	}
 
+//houxiangpan modified begin
+	of_property_read_u32(np, "prop", &prop);
+	pr_info("Use EDP as %s screen\n", (prop == PRMRY) ? "prmry" : "extend");
+//houxiangpan modified end
+
+
 	edp = devm_kzalloc(&pdev->dev, sizeof(struct rk32_edp), GFP_KERNEL);
 	if (!edp) {
 		dev_err(&pdev->dev, "no memory for state\n");
 		return -ENOMEM;
 	}
+	
+//houxiangpan modified begin
+	edp->prop = prop;
+//houxiangpan modified end
+
 	edp->dev = &pdev->dev;
 	edp->video_info.h_sync_polarity	= 0;
 	edp->video_info.v_sync_polarity	= 0;
@@ -1756,7 +1774,11 @@ static int rk32_edp_probe(struct platform_device *pdev)
 
 	edp->video_info.link_rate	= LINK_RATE_1_62GBPS;
 	edp->video_info.lane_count	= LANE_CNT4;
-	rk_fb_get_prmry_screen(&edp->screen);
+//houxiangpan modified begin
+//	rk_fb_get_prmry_screen(&edp->screen);
+	rk_fb_get_screen(&edp->screen, prop);
+//houxiangpan modified end
+
 	if (edp->screen.type != SCREEN_EDP) {
 		dev_err(&pdev->dev, "screen is not edp!\n");
 		return -EINVAL;
@@ -1854,7 +1876,11 @@ static int rk32_edp_probe(struct platform_device *pdev)
 	}
 
 	rk32_edp = edp;
-	rk_fb_trsm_ops_register(&trsm_edp_ops, SCREEN_EDP);
+//houxiangpan modified begin
+//	rk_fb_trsm_ops_register(&trsm_edp_ops, SCREEN_EDP);
+	rk_fb_trsm_ops_register(&trsm_edp_ops, prop);
+//houxiangpan modified end
+
 #if defined(CONFIG_DEBUG_FS)
 	edp->debugfs_dir = debugfs_create_dir("edp", NULL);
 	if (IS_ERR(edp->debugfs_dir)) {

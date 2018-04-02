@@ -84,14 +84,24 @@ disp_mipi_init_cmds: screen-on-cmds {
 	*/
 };
 
+/* houxiangpan modified 
 disp_timings: display-timings {
 	native-mode = <&timing0>;
+*/
+
+display-timings {
+	native-mode = <&tv080wum_nl0_mipi>;
 	compatible = "rockchip,display-timings";
+
+/* houxiangpan will modified 
 	timing0: timing0 {
+*/
+	tv080wum_nl0_mipi: timing0 {
 		screen-type = <SCREEN_MIPI>;
 		lvds-format = <LVDS_8BIT_2>;
 		out-face    = <OUT_P888>;
 		clock-frequency = <160000000>;
+
 		hactive = <1200>;
 		vactive = <1920>;
 		hback-porch = <21>;

@@ -3,10 +3,16 @@
  *
  */
 
-
+/*houxiangpan will modified begin
 disp_timings: display-timings {
         native-mode = <&timing0>;
         timing0: timing0 {
+*/
+
+display-timings {
+        native-mode = <&f402>;
+        f402: timing0 {
+
 		screen-type = <SCREEN_EDP>;
 		out-face    = <OUT_P666>;
 		clock-frequency = <205000000>;

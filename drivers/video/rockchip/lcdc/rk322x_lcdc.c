@@ -2021,6 +2021,9 @@ static int vop_load_screen(struct rk_lcdc_driver *dev_drv, bool initscreen)
 		}
 
 		vop_msk_reg(vop_dev, DSP_CTRL1, val);
+		printk(KERN_ALERT"init_lcd_hp vop_load_screen interface[%d]!\n",
+				screen->type);
+
 		switch (screen->type) {
 		case SCREEN_TVOUT:
 			val = V_SW_UV_OFFSET_EN(1) | V_SW_IMD_TVE_DCLK_EN(1) |
@@ -5138,10 +5141,14 @@ static int vop_probe(struct platform_device *pdev)
 	int ret = 0;
 	int te_pin;
 
+	printk(KERN_ALERT"init_lcd_hp rk32x_lcdc.c vop_probe");
+	pr_err("init_lcd_hp rk32x_lcdc.c:%s  \n", __func__);
+
 	/* if the primary lcdc has not registered ,the extend
 	 * lcdc register later
 	 */
 	of_property_read_u32(np, "rockchip,prop", &prop);
+	
 	if (prop == EXTEND) {
 		if (!is_prmry_rk_lcdc_registered())
 			return -EPROBE_DEFER;
@@ -5252,6 +5259,17 @@ static int vop_probe(struct platform_device *pdev)
 
 	rk322x_pdev = pdev;
 
+	printk(KERN_ALERT"init_lcd_hp func[%s] screen.type[%d] dev_drv->hot_plug_state[%d]!\n",
+			__func__,dev_drv->cur_screen->type,dev_drv->hot_plug_state);
+
+//houxiangpan modified begin
+//	if (dev_drv->cur_screen->type != SCREEN_HDMI && dev_drv->cur_screen->type != SCREEN_TVOUT)
+//			dev_drv->hot_plug_state = 1;
+	if (dev_drv->cur_screen->type != SCREEN_TVOUT)
+			dev_drv->hot_plug_state = 1;
+
+//houxiangpan modified end
+
 	if (dev_drv->cur_screen->refresh_mode == SCREEN_CMD_MODE) {
 		te_pin = of_get_named_gpio_flags(np, "te-gpio", 0, NULL);
 		if (IS_ERR_VALUE(te_pin)) {
@@ -5315,6 +5333,8 @@ static struct platform_driver vop_driver = {
 
 static int __init vop_module_init(void)
 {
+	pr_err("init_lcd_hp rk32x_lcdc.c:%s  \n", __func__);
+
 	return platform_driver_register(&vop_driver);
 }
 

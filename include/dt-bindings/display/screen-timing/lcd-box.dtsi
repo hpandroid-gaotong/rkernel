@@ -30,9 +30,14 @@
 
 };
 
+/* houxiangpan modified begin
 disp_timings: display-timings {
 	native-mode = <&timing0>;
 	timing0: timing0 {
+*/
+display-timings {
+   native-mode = <&hdmi_720p>;
+   hdmi_720p: timing0 {
 		screen-type = <SCREEN_RGB>;
 		out-face    = <OUT_P888>;
 		color-mode = <COLOR_YCBCR>;
@@ -53,7 +58,10 @@ disp_timings: display-timings {
 		swap-rg = <0>;
 		swap-gb = <0>;
 	};
+/* houxiangpan modified
 	timing1: timing1 {
+*/
+	hdmi_1080p: timing1 {
 		screen-type = <SCREEN_RGB>;
 		out-face    = <OUT_P888>;
 		color-mode = <COLOR_YCBCR>;
@@ -74,7 +82,12 @@ disp_timings: display-timings {
 		swap-rg = <0>;
 		swap-gb = <0>;
 	};
+
+/* houxiangpan modified
 	timing2: timing2 {
+*/
+
+	hdmi_2160p: timing2 {
 		screen-type = <SCREEN_RGB>;
 		out-face    = <OUT_P888>;
 		color-mode = <COLOR_YCBCR>;

@@ -571,6 +571,9 @@ struct rk32_edp {
 	bool edp_en;
 	int soctype;
 	struct dentry *debugfs_dir;
+//houxiangpan modified begin
+	int prop;
+//houxiangpan modified end
 };
 
 

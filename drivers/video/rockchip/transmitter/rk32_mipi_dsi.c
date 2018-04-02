@@ -1609,7 +1609,12 @@ static int rk32_dsi_enable(void)
 		pm_runtime_get_sync(&dsi0->pdev->dev);
 #endif
 		opt_mode = dsi0->screen.refresh_mode;
-		rk_fb_get_prmry_screen(dsi0->screen.screen);
+
+//houxiangpan modified begin
+//		rk_fb_get_prmry_screen(dsi0->screen.screen);
+		rk_fb_get_screen(dsi0->screen.screen, dsi0->prop);
+//houxiangpan modified end
+
 		dsi0->screen.lcdc_id = dsi0->screen.screen->lcdc_id;
 		rk32_init_phy_mode(dsi0->screen.lcdc_id);
 
@@ -1875,7 +1880,7 @@ static const struct of_device_id of_rk_mipi_dsi_match[] = {
 static int rk32_mipi_dsi_probe(struct platform_device *pdev)
 {
 	int ret = 0;
-	static int id;
+	static int id, prop;//houxiangpan add prop
 	struct dsi *dsi;
 	struct mipi_dsi_ops *ops;
 	struct rk_screen *screen;
@@ -1890,6 +1895,10 @@ static int rk32_mipi_dsi_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 	data = of_id->data;
+//houxiangpan modified begin
+	of_property_read_u32(np, "prop", &prop);
+	pr_info("Use mipi as %s screen\n", (prop == PRMRY) ? "prmry" : "extend");
+//houxiangpan modified end
 
 	dsi = devm_kzalloc(&pdev->dev, sizeof(struct dsi), GFP_KERNEL);
 	if (!dsi) {
@@ -1897,7 +1906,7 @@ static int rk32_mipi_dsi_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 	dsi->ops.id = data->dsi_id;
-	printk(KERN_INFO "%s\n", data->label);
+	printk(KERN_INFO "init_lcd_hp label[%s] dsi_id[%d] \n", data->label,data->dsi_id);
 	if (dsi->ops.id == DSI_RK3288 ||
 	    dsi->ops.id == DSI_RK3399) {
 		res_host = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -1988,7 +1997,7 @@ static int rk32_mipi_dsi_probe(struct platform_device *pdev)
 		return -EINVAL;
 	}
 	*/
-	printk("dsi->host.irq =%d\n", dsi->host.irq);
+	printk("init_lcd_hp dsi->host.irq =%d\n", dsi->host.irq);
 
 	disable_irq(dsi->host.irq);
 
@@ -1997,8 +2006,11 @@ static int rk32_mipi_dsi_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "request struct rk_screen fail!\n");
 		return -1;
 	}
-	rk_fb_get_prmry_screen(screen);
-
+//houxiangpan modified begin
+//	rk_fb_get_prmry_screen(screen);
+	rk_fb_get_screen(screen, prop);
+	dsi->prop = prop;
+//houxiangpan modified end
 	dsi->pdev = pdev;
 	ops = &dsi->ops;
 	ops->dsi = dsi;
@@ -2056,7 +2068,10 @@ static int rk32_mipi_dsi_probe(struct platform_device *pdev)
 		if(!support_uboot_display())
 			rk32_init_phy_mode(dsi_screen->lcdc_id);
 		*/
-		rk_fb_trsm_ops_register(&trsm_dsi_ops, SCREEN_MIPI);
+//houxiangpan modified begin
+//		rk_fb_trsm_ops_register(&trsm_dsi_ops, SCREEN_MIPI);
+		rk_fb_trsm_ops_register(&trsm_dsi_ops, prop);
+//houxiangpan modified end
 #ifdef MIPI_DSI_REGISTER_IO
 		debugfs_create_file("mipidsi0", S_IFREG | S_IRUGO, dsi->debugfs_dir, dsi,
 							&reg_proc_fops);
@@ -2114,6 +2129,7 @@ static struct platform_driver rk32_mipi_dsi_driver = {
 
 static int __init rk32_mipi_dsi_init(void)
 {
+
 	return platform_driver_register(&rk32_mipi_dsi_driver);
 }
 fs_initcall(rk32_mipi_dsi_init);
